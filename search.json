@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "golfballs.html#is-teemu-wearing-his-golfing-jumper",
+    "href": "golfballs.html#is-teemu-wearing-his-golfing-jumper",
+    "title": "Freestyle Experimentation",
+    "section": "Is Teemu wearing his golfing jumper?",
+    "text": "Is Teemu wearing his golfing jumper?\n\nLet’s do an experiment on Teemu\n\n\nTime to go golfing, Teemu!"
+  },
+  {
+    "objectID": "golfballs.html#teemu-hits-golf-balls",
+    "href": "golfballs.html#teemu-hits-golf-balls",
+    "title": "Freestyle Experimentation",
+    "section": "Teemu hits golf balls",
+    "text": "Teemu hits golf balls\nVery interesting! Isn’t Teemu talented!\n\nAll done. Please collect your Nobel Prize in Stickholm!\n\n\nBut was that an experiment?"
+  },
+  {
+    "objectID": "golfballs.html#lets-manipulate-teemu",
+    "href": "golfballs.html#lets-manipulate-teemu",
+    "title": "Freestyle Experimentation",
+    "section": "Let’s Manipulate Teemu!",
+    "text": "Let’s Manipulate Teemu!\n\nHow about we make it HARDER for Teemu?\n\n\nHow about we MOTIVATE Teemu?\n\n\nHow about we DISTRACT Teemu?\n\n\nDoes the putting actually matter at all?"
+  },
+  {
+    "objectID": "golfballs.html#lets-play-ball",
+    "href": "golfballs.html#lets-play-ball",
+    "title": "Freestyle Experimentation",
+    "section": "Let’s play ball!",
+    "text": "Let’s play ball!\nNow we have an experiment!\n\nWhat else could we do?\n\n\nWhat else do we need to improve this experiment?"
+  },
+  {
+    "objectID": "golfballs.html#design-1",
+    "href": "golfballs.html#design-1",
+    "title": "Freestyle Experimentation",
+    "section": "Design 1",
+    "text": "Design 1\nThat was a task where we made REPEATED MEASURES on Teemu.\nWe didn’t really need another participant.\nSo the Manipulation was Within-Subject or REPEATED MEASURES"
+  },
+  {
+    "objectID": "golfballs.html#analysis-1",
+    "href": "golfballs.html#analysis-1",
+    "title": "Freestyle Experimentation",
+    "section": "Analysis 1",
+    "text": "Analysis 1\nwith 2 conditions (A & B) manipulated within-subject, or with REPEATED MEASURES\nwe would use a PAIRED T-Test\nBut of course, we need more than Teemu, don’t we?"
+  },
+  {
+    "objectID": "golfballs.html#the-teemu-multiplier",
+    "href": "golfballs.html#the-teemu-multiplier",
+    "title": "Freestyle Experimentation",
+    "section": "The Teemu Multiplier",
+    "text": "The Teemu Multiplier\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| components: [viewer]\n#| viewerHeight: 600\n#| standalone: true\n\nlibrary(shiny)\nlibrary(ggplot2)\n\nui &lt;- fluidPage(\n  titlePanel(\"Putting Competition Data Visualization\"),\n  \n  fluidRow(\n    column(4,\n      sliderInput(\"mean_positive\", \"Mean score (Positive interaction):\", min = 0, max = 100, value = 70, step = 1),\n      sliderInput(\"mean_negative\", \"Mean score (Negative interaction):\", min = 0, max = 100, value = 60, step = 1),\n      sliderInput(\"sd_within\", \"Within-subject SD:\", min = 1, max = 50, value = 10, step = 1),\n      sliderInput(\"correlation\", \"Correlation between conditions:\", min = -1, max = 1, value = 0.5, step = 0.1),\n      numericInput(\"n\", \"Number of golfers:\", value = 30, min = 2)\n    ),\n    column(8,\n      h4(\"Putting Competition Data:\"),\n      verbatimTextOutput(\"data_head\"),\n      plotOutput(\"dist_plot\", height = \"300px\")\n    )\n  )\n)\n\nserver &lt;- function(input, output) {\n  \n  # Generate data\n  generate_data &lt;- reactive({\n    set.seed(123)  # For reproducibility\n    sigma &lt;- matrix(c(input$sd_within^2, \n                      input$correlation*input$sd_within^2,\n                      input$correlation*input$sd_within^2,\n                      input$sd_within^2), 2, 2)\n    data &lt;- MASS::mvrnorm(input$n, mu = c(input$mean_positive, input$mean_negative), Sigma = sigma)\n    data.frame(\n      Golfer = 1:input$n,\n      Positive_Interaction = pmax(pmin(data[,1], 100), 0),  # Clamp values between 0 and 100\n      Negative_Interaction = pmax(pmin(data[,2], 100), 0)   # Clamp values between 0 and 100\n    )\n  })\n  \n  output$data_head &lt;- renderPrint({\n    head(generate_data())\n  })\n  \n  output$dist_plot &lt;- renderPlot({\n    data &lt;- generate_data()\n    \n    ggplot(data, aes(x = Positive_Interaction, y = Negative_Interaction)) +\n      geom_point(alpha = 0.6) +\n      geom_abline(intercept = 0, slope = 1, linetype = \"dashed\", color = \"gray\") +\n      labs(title = \"Putting Scores: Positive vs Negative Crowd Interaction\",\n           x = \"Score with Positive Interaction\",\n           y = \"Score with Negative Interaction\") +\n      theme_minimal() +\n      coord_fixed(xlim = c(0, 100), ylim = c(0, 100))\n  })\n}\n\nshinyApp(ui = ui, server = server)"
+  },
+  {
+    "objectID": "golfballs.html#paired-teemu-test",
+    "href": "golfballs.html#paired-teemu-test",
+    "title": "Freestyle Experimentation",
+    "section": "Paired T(eemu)-Test",
+    "text": "Paired T(eemu)-Test\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| components: [viewer]\n#| viewerHeight: 600\n#| standalone: true\n\nlibrary(shiny)\nlibrary(ggplot2)\n\nui &lt;- fluidPage(\n  titlePanel(\"Within-Subjects RM Paired T-Test Calculator\"),\n  \n  fluidRow(\n    column(4,\n      sliderInput(\"mean_a\", \"Mean Condition 1:\", min = 0, max = 100, value = 50, step = 1),\n      sliderInput(\"mean_b\", \"Mean Condition 2:\", min = 0, max = 100, value = 55, step = 1),\n      sliderInput(\"sd_within\", \"Within-subject SD:\", min = 1, max = 100, value = 20, step = 1),\n      sliderInput(\"correlation\", \"Correlation between A and B:\", min = -1, max = 1, value = 0.5, step = 0.1),\n      numericInput(\"n\", \"Sample size:\", value = 30, min = 2)\n    ),\n    column(8,\n      h4(\"Within-Subjects T-Test Results:\"),\n      verbatimTextOutput(\"ttest_result\"),\n      plotOutput(\"dist_plot\", height = \"300px\")\n    )\n  )\n)\n\nserver &lt;- function(input, output) {\n  \n  output$ttest_result &lt;- renderPrint({\n    set.seed(123)  # For reproducibility\n    \n    # Generate correlated data for condition A and B\n    sigma &lt;- matrix(c(input$sd_within^2, \n                      input$correlation*input$sd_within^2,\n                      input$correlation*input$sd_within^2,\n                      input$sd_within^2), 2, 2)\n    data &lt;- MASS::mvrnorm(input$n, mu = c(input$mean_a, input$mean_b), Sigma = sigma)\n    condition_a &lt;- data[,1]\n    condition_b &lt;- data[,2]\n    \n    # Perform paired t-test\n    t_test_result &lt;- t.test(condition_b, condition_a, paired = TRUE)\n    print(t_test_result)\n  })\n  \n  output$dist_plot &lt;- renderPlot({\n    # Calculate the standard error of the difference\n    se_diff &lt;- sqrt(2 * (input$sd_within^2) * (1 - input$correlation))\n    mean_diff &lt;- input$mean_b - input$mean_a\n    \n    # Calculate the range for x-axis\n    min_x &lt;- min(input$mean_a, input$mean_b) - 3*input$sd_within\n    max_x &lt;- max(input$mean_a, input$mean_b) + 3*input$sd_within\n    \n    x &lt;- seq(min_x, max_x, length.out = 1000)\n    y_a &lt;- dnorm(x, mean = input$mean_a, sd = input$sd_within)\n    y_b &lt;- dnorm(x, mean = input$mean_b, sd = input$sd_within)\n    \n    df &lt;- data.frame(\n      x = rep(x, 2),\n      y = c(y_a, y_b),\n      group = rep(c(\"Condition A\", \"Condition B\"), each = length(x))\n    )\n    \n    ggplot() +\n      geom_area(data = df, aes(x = x, y = y, fill = group), alpha = 0.5, position = \"identity\") +\n      scale_fill_manual(values = c(\"blue\", \"red\")) +\n      geom_vline(xintercept = input$mean_a, color = \"blue\", linetype = \"dashed\") +\n      geom_vline(xintercept = input$mean_b, color = \"red\", linetype = \"dashed\") +\n      geom_segment(aes(x = input$mean_a, xend = input$mean_b, y = 0.04, yend = 0.04),\n                   arrow = arrow(ends = \"both\", length = unit(0.2, \"cm\")), color = \"black\") +\n      annotate(\"text\", x = mean(c(input$mean_a, input$mean_b)), y = 0.045, \n               label = sprintf(\"Mean Diff: %.2f\", mean_diff)) +\n      labs(title = \"Distribution of Scores in Condition A and B\",\n           x = \"Score\",\n           y = \"Density\") +\n      theme_minimal() +\n      theme(legend.position = \"bottom\") +\n      coord_cartesian(xlim = c(min_x, max_x)) +\n      scale_x_continuous(breaks = seq(round(min_x), round(max_x), by = 20))\n  })\n}\n\nshinyApp(ui = ui, server = server)"
+  },
+  {
+    "objectID": "golfballs.html#independent-t-test",
+    "href": "golfballs.html#independent-t-test",
+    "title": "Freestyle Experimentation",
+    "section": "Independent T-Test",
+    "text": "Independent T-Test\nIf we had Teemu in condition A and his twin Fleemu(?) in condition B they would be independent entities and so an INDEPENDENT T-Test would be the correct approach.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| components: [viewer]\n#| viewerHeight: 600\n#| standalone: true\nlibrary(shiny)\nlibrary(ggplot2)\n\nui &lt;- fluidPage(\n  titlePanel(\"Independent T-Test Calculator with Distribution Plot\"),\n  \n  sidebarLayout(\n    sidebarPanel(\n      sliderInput(\"mean_a\", \"Mean A:\", min = 0, max = 100, value = 50, step = 1),\n      sliderInput(\"sd_a\", \"Standard Deviation A:\", min = 1, max = 50, value = 5, step = 1),\n      sliderInput(\"mean_b\", \"Mean B:\", min = 0, max = 100, value = 50, step = 1),\n      sliderInput(\"sd_b\", \"Standard Deviation B:\", min = 1, max = 50, value = 5, step = 1),\n      numericInput(\"n\", \"Sample size for each group:\", value = 50, min = 2)\n    ),\n    \n    mainPanel(\n      h4(\"T-Test Results:\"),\n      verbatimTextOutput(\"ttest_result\"),\n      plotOutput(\"dist_plot\")\n    )\n  )\n)\n\nserver &lt;- function(input, output) {\n  \n  output$ttest_result &lt;- renderPrint({\n    set.seed(123)  # For reproducibility\n    group_a &lt;- rnorm(input$n, mean = input$mean_a, sd = input$sd_a)\n    group_b &lt;- rnorm(input$n, mean = input$mean_b, sd = input$sd_b)\n    \n    t_test_result &lt;- t.test(group_a, group_b)\n    print(t_test_result)\n  })\n  \n  output$dist_plot &lt;- renderPlot({\n    # Calculate the range for x-axis\n    min_x &lt;- min(input$mean_a - 4*input$sd_a, input$mean_b - 4*input$sd_b)\n    max_x &lt;- max(input$mean_a + 4*input$sd_a, input$mean_b + 4*input$sd_b)\n    \n    x &lt;- seq(min_x, max_x, length.out = 1000)\n    y_a &lt;- dnorm(x, mean = input$mean_a, sd = input$sd_a)\n    y_b &lt;- dnorm(x, mean = input$mean_b, sd = input$sd_b)\n    \n    df &lt;- data.frame(\n      x = rep(x, 2),\n      y = c(y_a, y_b),\n      group = rep(c(\"A\", \"B\"), each = length(x))\n    )\n    \n    ggplot(df, aes(x = x, y = y, fill = group)) +\n      geom_area(alpha = 0.5, position = \"identity\") +\n      scale_fill_manual(values = c(\"blue\", \"red\")) +\n      labs(title = \"Distribution Plot\",\n           x = \"Value\",\n           y = \"Density\") +\n      theme_minimal() +\n      coord_cartesian(xlim = c(min_x, max_x)) +\n      scale_x_continuous(breaks = seq(round(min_x), round(max_x), by = 10))\n  })\n}\n\nshinyApp(ui = ui, server = server)\nSo Fleemu has gone home, but we are still messing around\nLet’s really put Teemu to the test and put him in 3 conditions.\nA, B, C\nHow could we do this?"
+  },
+  {
+    "objectID": "golfballs.html#three-conditions-one-way-repeated-measures-anova",
+    "href": "golfballs.html#three-conditions-one-way-repeated-measures-anova",
+    "title": "Freestyle Experimentation",
+    "section": "Three Conditions (One-Way Repeated Measures ANOVA)",
+    "text": "Three Conditions (One-Way Repeated Measures ANOVA)\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| components: [viewer]\n#| viewerHeight: 600\n#| standalone: true\n\nlibrary(shiny)\nlibrary(ggplot2)\n\nui &lt;- fluidPage(\n  titlePanel(\"Putting Competition: One-Way ANOVA\"),\n  \n  sidebarLayout(\n    sidebarPanel(\n      sliderInput(\"mean_negative\", \"Mean score (Negative):\", min = 0, max = 100, value = 60, step = 1),\n      sliderInput(\"mean_neutral\", \"Mean score (Neutral):\", min = 0, max = 100, value = 70, step = 1),\n      sliderInput(\"mean_positive\", \"Mean score (Positive):\", min = 0, max = 100, value = 80, step = 1),\n      sliderInput(\"sd\", \"Standard Deviation:\", min = 1, max = 20, value = 10, step = 1),\n      numericInput(\"n\", \"Number of golfers per group:\", value = 30, min = 5)\n    ),\n    \n    mainPanel(\n      verbatimTextOutput(\"anova_result\"),\n      plotOutput(\"boxplot\")\n    )\n  )\n)\n\nserver &lt;- function(input, output) {\n  \n  generate_data &lt;- reactive({\n    set.seed(123)\n    data.frame(\n      Score = c(\n        rnorm(input$n, input$mean_negative, input$sd),\n        rnorm(input$n, input$mean_neutral, input$sd),\n        rnorm(input$n, input$mean_positive, input$sd)\n      ),\n      Condition = rep(c(\"Negative\", \"Neutral\", \"Positive\"), each = input$n)\n    )\n  })\n  \n  output$anova_result &lt;- renderPrint({\n    data &lt;- generate_data()\n    model &lt;- aov(Score ~ Condition, data = data)\n    summary(model)\n  })\n  \n  output$boxplot &lt;- renderPlot({\n    data &lt;- generate_data()\n    ggplot(data, aes(x = Condition, y = Score, fill = Condition)) +\n      geom_boxplot() +\n      theme_minimal() +\n      scale_fill_manual(values = c(\"red\", \"gray\", \"blue\"))\n  })\n}\n\nshinyApp(ui = ui, server = server)"
+  },
+  {
+    "objectID": "golfballs.html#but-back-to-the-2-level-independent-variables",
+    "href": "golfballs.html#but-back-to-the-2-level-independent-variables",
+    "title": "Freestyle Experimentation",
+    "section": "But back to the 2 level Independent Variables",
+    "text": "But back to the 2 level Independent Variables\nCondition A and Condition B\nList some good ones"
+  },
+  {
+    "objectID": "golfballs.html#its-a-shame-we-cant-test-more-than-one-iv-at-a-time",
+    "href": "golfballs.html#its-a-shame-we-cant-test-more-than-one-iv-at-a-time",
+    "title": "Freestyle Experimentation",
+    "section": "It’s a shame we can’t test more than one IV at a time!",
+    "text": "It’s a shame we can’t test more than one IV at a time!\nAha! But we can.\nThat’s where a Two-Way ANOVA comes in.\n\nTwo way refers to having 2 independent Variables that we ‘cross’ or merge.\n\n\nFor simplicity, I’ve conjured up an idea and we can let Teemu sit down."
+  },
+  {
+    "objectID": "golfballs.html#another-game",
+    "href": "golfballs.html#another-game",
+    "title": "Freestyle Experimentation",
+    "section": "Another ‘game’",
+    "text": "Another ‘game’\nI need 4 volunteers\nParticipants 1, 2, 3, 4"
+  },
+  {
+    "objectID": "golfballs.html#x2-design",
+    "href": "golfballs.html#x2-design",
+    "title": "Freestyle Experimentation",
+    "section": "2x2 Design",
+    "text": "2x2 Design\n\n\n\n\n\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| components: [viewer]\n#| viewerHeight: 800\n#| standalone: true\n\nlibrary(ggplot2)\nlibrary(gridExtra)\n\n# Function to create a single design plot\ncreate_design_plot &lt;- function(data, title) {\n  ggplot(data, aes(x = Condition, y = Golfer, fill = Score)) +\n    geom_tile(color = \"white\") +\n    scale_fill_gradient(low = \"lightblue\", high = \"darkblue\", na.value = \"white\") +\n    labs(title = title) +\n    theme_minimal() +\n    theme(axis.text.y = element_blank(),\n          axis.ticks = element_blank(),\n          panel.grid = element_blank(),\n          legend.position = \"none\")\n}\n\n# Data for between-groups t-test\nbetween_data &lt;- data.frame(\n  Golfer = rep(1:20, 2),\n  Condition = rep(c(\"Negative\", \"Positive\"), each = 20),\n  Score = c(rep(\"Score\", 20), rep(NA, 20))\n)\n\n# Data for within-subject t-test\nwithin_data &lt;- data.frame(\n  Golfer = rep(1:20, 2),\n  Condition = rep(c(\"Negative\", \"Positive\"), each = 20),\n  Score = rep(\"Score\", 40)\n)\n\n# Data for within-subject ANOVA\nanova_data &lt;- data.frame(\n  Golfer = rep(1:20, 3),\n  Condition = rep(c(\"Negative\", \"Neutral\", \"Positive\"), each = 20),\n  Score = rep(\"Score\", 60)\n)\n\n# Create individual plots\np1 &lt;- create_design_plot(between_data, \"Between-Groups\\n(Independent t-test)\")\np2 &lt;- create_design_plot(within_data, \"Within-Subject\\n(Paired t-test)\")\np3 &lt;- create_design_plot(anova_data, \"Within-Subject\\n(Repeated Measures ANOVA)\")\n\n# Combine plots\ngrid.arrange(p1, p2, p3, ncol = 1)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Demo",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  }
+]
